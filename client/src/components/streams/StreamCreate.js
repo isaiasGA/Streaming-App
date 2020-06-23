@@ -2,6 +2,8 @@
 //'reduxForm' is a function similar to connect(), which will be used to communicate with our provider and therefore with our state
 import React from "react";
 import { Field, reduxForm } from "redux-form";
+import { connect } from 'react-redux';
+import { createStream } from '../../actions/index';
 
 //'Field': It is a component that is gonna be used every time we need to get an inpur from an user. This input can be textbox, radioButton, dropdown
 //Field component doesnot know how to render/display content on the screen. It only knows how to colect values from inputs and manage forms
@@ -18,8 +20,9 @@ class StreamCreate extends React.Component {
       );
     }
   }
+  
+  //WEve set up this variable with meta.error and meta.touched so that we can diplasy the error message once we click in and click out of the input as well as when we dont have an input and we try to submit the form
   renderInput = ({ input, label, meta }) => {
-    //WEve set up this variable with meta.error and meta.touched so that we can diplasy the error message once we click in and click out of the input as well as when we dont have an input and we try to submit the form
     const className = `field ${meta.error && meta.touched ? "error" : ""}`;
     // console.log("meta", meta);
     // console.log('formProps',formProps);
@@ -32,8 +35,13 @@ class StreamCreate extends React.Component {
     );
   };
 
-  onSubmit(formValues) {
-    console.log(formValues);
+//'onSubmit' will only run once our form has been validated and our inputs are valid
+// 'onSumit' will crate our action creator of 'onSubmit'
+//our action creator 'createStream' WILL THEN make an API request of '.post' to our JSON server, then a new stream will be created
+
+  onSubmit = (formValues) => {
+    this.props.createStream(formValues);
+    // console.log('formValues',formValues);
   }
 
   //'label' is a property that is not identified by the Field component, and therefore, we pass it to 'renderInput'
@@ -77,8 +85,11 @@ const validate = formValues => {
 };
 
 //'reduxForm' only recives one argument as an object
-//We also need to name our form, as seen in our code below 'stramCreate'
-export default reduxForm({
+//We also need to give our form a name, as seen in our code below 'stramCreate'
+//if we are using connect and reduxForm, then it would be best to wrapped our reduxForm in a variable and just pass it to our connect() function as seen below
+ const formWrapped = reduxForm({
   form: "streamCreate",
   validate: validate
 })(StreamCreate);
+
+export default connect(null,{createStream: createStream})(formWrapped)
