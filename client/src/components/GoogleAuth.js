@@ -33,7 +33,7 @@ class GoogleAuth extends React.Component {
   //'signIn()' We are calling the signIn action creator as well as passing in the ID 'currentUser.get().getId()' from the user who just logged in to our action creator
 
   onAuthChange = isSignedIn => {
-    console.log("isSignedIn", isSignedIn);
+    // console.log("isSignedIn", isSignedIn);
     if (isSignedIn === true) {
       this.props.signIn(this.auth.currentUser.get().getId());
     } else {
